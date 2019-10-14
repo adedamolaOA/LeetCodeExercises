@@ -30,9 +30,22 @@ package com.leet.code.excerises.a7;
  */
 public class ReverseInteger {
 
-    public int reverse( int x ) {
+    public static void main( String[] args ) {
+        System.out.println( reverse(-123) );
+    }
+    public static int reverse( int x ) {
         int reversedX = 0;
-        
+        while(x!=0){
+            int valueToshift = x % 10;
+            x/=10;            
+            if(reversedX > Integer.MAX_VALUE /10 || (reversedX == Integer.MAX_VALUE/10 && valueToshift > 7)){
+                return 0;
+            }
+            if(reversedX < Integer.MIN_VALUE/10 ||( reversedX == Integer.MIN_VALUE/10 && valueToshift < -8)){
+                return 0;
+            }
+            reversedX = reversedX *10 + valueToshift;  //<-- Shift Value to reversedX store
+        }        
         
         return reversedX;
     }
