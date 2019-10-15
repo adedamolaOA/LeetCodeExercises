@@ -55,7 +55,7 @@ public class StringToInteger {
 
     public static void main( String[] args ) {
         System.out.println( myAtoi(
-                "w10734368512"
+                ".1"
         ) );//"2147483646" "-91283472332" "-2147483647" "-2147483648"//"w10734368512"
     }
 
@@ -63,42 +63,18 @@ public class StringToInteger {
         int atoi = 0;
         int count = 0;
         StringBuilder numberBuilder = new StringBuilder();
-        char[] readChars = str.toCharArray();
         boolean started = false;
         int byMinus = 1;
         while (count < str.length())
         {
-
-            if (str.length() == 0)
+            if (str.length() <= 1)
             {
-                return atoi;
+                return ( Character.isDigit( str.charAt( 0 ) ) && str.length() > 0 ) ? Integer.parseInt( String.valueOf( str.charAt( 0 ) ) ) : 0;
             }
 
-            if (str.length() == 1)
-            {
-                return Character.isDigit( str.charAt( 0 ) ) ? Integer.parseInt( String.valueOf( str.charAt( 0 ) ) ) : 0;
-            }
+            char selectedChar = str.charAt( count );
 
-            if (atoi >= Integer.MAX_VALUE)
-            {
-                return Integer.MAX_VALUE;
-            }
-
-            if (atoi < Integer.MIN_VALUE)
-            {
-                return Integer.MIN_VALUE;
-            }
-            
-            
-            char selectedChar = readChars[count];
-
-            if(count >0 && ((Character.isAlphabetic( str.charAt( count -1 )) && Character.isDigit( selectedChar)) || (Character.isAlphabetic( selectedChar) && Character.isDigit( str.charAt( count -1))))){
-                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
-                return atoi;
-            }
-
-            if (!Character.isLetterOrDigit( selectedChar ) && !Character.isSpaceChar( selectedChar )
-                && !String.valueOf( selectedChar ).equals( "-" ) && !String.valueOf( selectedChar ).equals( "+" ))
+            if (isVaildCondition( str, count, selectedChar, started ))
             {
                 atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
                 return atoi;
@@ -106,15 +82,7 @@ public class StringToInteger {
 
             if (selectedChar == '-' && byMinus == 1)
             {
-                if (count > 0 && Character.isLetterOrDigit( str.charAt( count - 1 ) ))
-                {
-                    atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
-                    return atoi;
-                }
                 byMinus = -1;
-            }else if(selectedChar == '+' && count > 0 &&  Character.isLetterOrDigit( str.charAt( count - 1 ) )){
-                 atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
-                 return atoi;
             }
 
             if (( Character.isSpaceChar( selectedChar ) || !Character.isAlphabetic( selectedChar ) ) && started == false)
@@ -142,23 +110,30 @@ public class StringToInteger {
                 System.out.println( count + " " + selectedChar );
                 atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
 
-            } else if (started
-                       && ( ( Character.isSpaceChar( selectedChar )
-                              && !Character.isSpaceChar( str.charAt( count - 1 ) ) )
-                            || Character.isAlphabetic( selectedChar ) ))
-            {
-
-                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
-                return atoi;
-            } else if (!Character.isLetterOrDigit( selectedChar )
-                       && !Character.isLetterOrDigit( str.charAt( count - 1 ) ) && !Character.isSpaceChar( str.charAt( count - 1 ) ) && !Character.isSpaceChar( str.charAt( count ) ))
-            {
-                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
-                return atoi;
             }
 
             count++;
         }
         return atoi;
+    }
+
+    public static boolean isVaildCondition( String str, int count, char selectedChar, boolean started ) {
+
+        return ( ( count > 0
+                   && ( ( Character.isAlphabetic( str.charAt( count - 1 ) ) && Character.isDigit( selectedChar ) )
+                        || ( Character.isAlphabetic( selectedChar ) && Character.isDigit( str.charAt( count - 1 ) ) )
+                        || ( !Character.isLetterOrDigit( selectedChar ) && !Character.isLetterOrDigit( str.charAt( count - 1 ) )
+                             && !Character.isSpaceChar( str.charAt( count - 1 ) )
+                             && !Character.isSpaceChar( str.charAt( count ) ) )
+                        || ( ( selectedChar == '+' || selectedChar == '-' ) && Character.isLetterOrDigit( str.charAt( count - 1 ) ) ) )
+                 )
+                 || ( !Character.isLetterOrDigit( selectedChar )
+                      && !Character.isSpaceChar( selectedChar )
+                      && !String.valueOf( selectedChar ).equals( "-" )
+                      && !String.valueOf( selectedChar ).equals( "+" ) )
+
+                 || ( ( started
+                        && ( ( Character.isSpaceChar( selectedChar )
+                               && !Character.isSpaceChar( str.charAt( count - 1 ) ) ) || Character.isAlphabetic( selectedChar ) ) ) ) );
     }
 }
