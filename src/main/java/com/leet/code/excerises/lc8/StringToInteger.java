@@ -54,9 +54,9 @@ package com.leet.code.excerises.lc8;
 public class StringToInteger {
 
     public static void main( String[] args ) {
-        System.out.println( myAtoi( 
-
-"-91283472332" ) );
+        System.out.println( myAtoi(
+                "w10734368512"
+        ) );//"2147483646" "-91283472332" "-2147483647" "-2147483648"//"w10734368512"
     }
 
     public static int myAtoi( String str ) {
@@ -68,59 +68,94 @@ public class StringToInteger {
         int byMinus = 1;
         while (count < str.length())
         {
-            System.out.println( atoi );
-            
-            if (str.length() == 0) return atoi;
-          
-            if (atoi >= Integer.MAX_VALUE )  return Integer.MAX_VALUE;            
 
-            if (atoi <= Integer.MIN_VALUE ) return Integer.MIN_VALUE;            
-
-            char selectedChar = readChars[count];  
-            
-             if (!Character.isLetterOrDigit( selectedChar ) && !Character.isSpaceChar( selectedChar ) && 
-                 !String.valueOf( selectedChar).equals( "-" ) && !String.valueOf( selectedChar).equals( "+" )){
-                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() )*byMinus;
+            if (str.length() == 0)
+            {
                 return atoi;
             }
+
+            if (str.length() == 1)
+            {
+                return Character.isDigit( str.charAt( 0 ) ) ? Integer.parseInt( String.valueOf( str.charAt( 0 ) ) ) : 0;
+            }
+
+            if (atoi >= Integer.MAX_VALUE)
+            {
+                return Integer.MAX_VALUE;
+            }
+
+            if (atoi < Integer.MIN_VALUE)
+            {
+                return Integer.MIN_VALUE;
+            }
             
+            
+            char selectedChar = readChars[count];
+
+            if(count >0 && ((Character.isAlphabetic( str.charAt( count -1 )) && Character.isDigit( selectedChar)) || (Character.isAlphabetic( selectedChar) && Character.isDigit( str.charAt( count -1))))){
+                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
+                return atoi;
+            }
+
+            if (!Character.isLetterOrDigit( selectedChar ) && !Character.isSpaceChar( selectedChar )
+                && !String.valueOf( selectedChar ).equals( "-" ) && !String.valueOf( selectedChar ).equals( "+" ))
+            {
+                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
+                return atoi;
+            }
 
             if (selectedChar == '-' && byMinus == 1)
             {
+                if (count > 0 && Character.isLetterOrDigit( str.charAt( count - 1 ) ))
+                {
+                    atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
+                    return atoi;
+                }
                 byMinus = -1;
+            }else if(selectedChar == '+' && count > 0 &&  Character.isLetterOrDigit( str.charAt( count - 1 ) )){
+                 atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
+                 return atoi;
             }
-            
+
             if (( Character.isSpaceChar( selectedChar ) || !Character.isAlphabetic( selectedChar ) ) && started == false)
             {
                 started = !started;
-                if(Character.isDigit(selectedChar ) ){
+                if (Character.isDigit( selectedChar ))
+                {
                     numberBuilder.append( selectedChar );
                 }
 
-            }
-            else if (started && !Character.isSpaceChar( selectedChar ) && Character.isDigit( selectedChar ))
+            } else if (started && !Character.isSpaceChar( selectedChar ) && Character.isDigit( selectedChar ))
             {
 
                 numberBuilder.append( selectedChar );
-                if (atoi >= Integer.MAX_VALUE/10 )  return Integer.MAX_VALUE;            
+                int oValue = Integer.parseInt( String.valueOf( selectedChar ) ) * byMinus;
+                if (atoi > ( Integer.MAX_VALUE / 10 ) || ( atoi == ( Integer.MAX_VALUE / 10 ) && oValue > 6 ))
+                {
+                    return Integer.MAX_VALUE;
+                }
 
-                if (atoi <= Integer.MIN_VALUE/10 ) return Integer.MIN_VALUE;  
-                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString()  )*byMinus;
+                if (atoi < ( Integer.MIN_VALUE / 10 ) || ( atoi == ( Integer.MIN_VALUE / 10 ) && oValue < -7 ) || ( atoi == Integer.MIN_VALUE ))
+                {
+                    return Integer.MIN_VALUE;
+                }
+                System.out.println( count + " " + selectedChar );
+                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
 
-            } else if (started && 
-                       ( (Character.isSpaceChar( selectedChar ) && 
-                          ! Character.isSpaceChar( str.charAt( count-1))) || 
-                         Character.isAlphabetic( selectedChar )))
-            {              
-               
-                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() )*byMinus;
+            } else if (started
+                       && ( ( Character.isSpaceChar( selectedChar )
+                              && !Character.isSpaceChar( str.charAt( count - 1 ) ) )
+                            || Character.isAlphabetic( selectedChar ) ))
+            {
+
+                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
                 return atoi;
-            } else if(!Character.isLetterOrDigit( selectedChar ) && 
-                          ! Character.isLetterOrDigit( str.charAt( count-1)) && ! Character.isSpaceChar( str.charAt( count-1)) && ! Character.isSpaceChar( str.charAt( count))){
-                 atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() )*byMinus;
+            } else if (!Character.isLetterOrDigit( selectedChar )
+                       && !Character.isLetterOrDigit( str.charAt( count - 1 ) ) && !Character.isSpaceChar( str.charAt( count - 1 ) ) && !Character.isSpaceChar( str.charAt( count ) ))
+            {
+                atoi = numberBuilder.toString().isEmpty() ? 0 : Integer.parseInt( numberBuilder.toString() ) * byMinus;
                 return atoi;
             }
-            
 
             count++;
         }
